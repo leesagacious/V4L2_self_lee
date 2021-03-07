@@ -29,7 +29,9 @@ int register_video_self_device(struct video_self_device *vsd)
 		goto cdev_failed;
 	}
 
+	mutex_lock(&vsd_device_lock);
 	list_add_tail(&vsd->self_dev, &video_self_device);
+	mutex_unlock(&vsd_device_lock);
 
 	return ret;	
 }	
