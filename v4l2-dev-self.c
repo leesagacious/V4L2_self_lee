@@ -13,7 +13,7 @@ int register_video_self_device(struct video_self_device *vsd)
 	vsd->cdev = cdev_alloc();
 	if (!vsd->cdev) {
 		ret = -ENOMEM;
-		goto cdev_failed;
+		goto delete_action;
 	}
 
 	vsd->cdev->ops = &vsd_fops;
@@ -26,12 +26,22 @@ int register_video_self_device(struct video_self_device *vsd)
 		pr_debug("cdev_add error %s\n", __func__);
 		kfree(vsd->cdev);
 		vsd->cdev = NULL;
-		goto cdev_failed;
+		goto delete_action;
 	}
 
 	mutex_lock(&vsd_device_lock);
 	list_add_tail(&vsd->self_dev, &video_self_device);
 	mutex_unlock(&vsd_device_lock);
+
+	ret = device_register(&vsd->dev);
+	if (ret < 0) {
+		pr_debug("device_register has failed : %s\n", __func__);
+		goto delete_action;
+	}
+
+	return 0;
+
+delete_action:
 
 	return ret;	
 }	
