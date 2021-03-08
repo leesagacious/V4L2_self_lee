@@ -23,7 +23,7 @@ int register_video_self_device(struct video_self_device *vsd)
 		/*
 		 * not use pr_err.
 		 */
-		pr_debug("cdev_add error %s\n", __func__);
+		dev_err(&vsd->self_dev, "cdev_add error %s\n", __func__);
 		kfree(vsd->cdev);
 		vsd->cdev = NULL;
 		goto delete_action;
@@ -35,7 +35,7 @@ int register_video_self_device(struct video_self_device *vsd)
 
 	ret = device_register(&vsd->dev);
 	if (ret < 0) {
-		pr_debug("device_register has failed : %s\n", __func__);
+		dev_err(&vsd->self_dev, "device_register has failed : %s\n", __func__);
 		goto delete_action;
 	}
 

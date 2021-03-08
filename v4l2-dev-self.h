@@ -1,6 +1,7 @@
 
 struct video_self_device
 {
+	char name[32];
 	struct device self_dev;
 	struct cdev *self_cdev;
 };
