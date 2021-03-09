@@ -1,5 +1,8 @@
 #include <linux/list.h>
+#include <linux/mutex.h>
 #include "v4l2-dev-self.h"
+
+static DEFINE_MUTEX(vsd_device_lock);
 /*
  * A linked list used to store video devices
  * No longer use arrays to store.
