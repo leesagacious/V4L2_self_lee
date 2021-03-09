@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: BSD-2-Clause
+/*
+ * Copyright (c) 2021, leesagacious.
+ */
+
 #include <linux/list.h>
 #include <linux/mutex.h>
 #include "v4l2-dev-self.h"
@@ -32,6 +37,9 @@ int register_video_self_device(struct video_self_device *vsd)
 		goto delete_action;
 	}
 
+	/*
+	 * Mutex also implements the spin waiting mechanism.
+	 */
 	mutex_lock(&vsd_device_lock);
 	list_add_tail(&vsd->self_dev, &video_self_device);
 	mutex_unlock(&vsd_device_lock);
@@ -46,5 +54,5 @@ int register_video_self_device(struct video_self_device *vsd)
 
 delete_action:
 
-	return ret;	
-}	
+	return ret;
+}
