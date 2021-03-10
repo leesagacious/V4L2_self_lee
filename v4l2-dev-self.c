@@ -5,6 +5,7 @@
 
 #include <linux/list.h>
 #include <linux/mutex.h>
+#include <linux/ktime.h>
 #include "v4l2-dev-self.h"
 
 static DEFINE_MUTEX(vsd_device_lock);
@@ -17,6 +18,10 @@ static LIST_HEAD(video_self_device)
 int register_video_self_device(struct video_self_device *vsd)
 {
 	int ret;
+	ktime_t invoke_time, delta, return_time;
+	u64 microsecond;
+
+	invoke_time = ktime_get();
 
 	vsd->cdev = cdev_alloc();
 	if (!vsd->cdev) {
@@ -49,6 +54,13 @@ int register_video_self_device(struct video_self_device *vsd)
 		dev_err(&vsd->self_dev, "device_register has failed : %s\n", __func__);
 		goto delete_action;
 	}
+
+	return_time = ktime_get();
+
+	delta = ktime_sub(return_time, invoke_time);
+	microsecond = (u64)ktime_to_ns(delta) >> 10;
+
+	dev_dbg("the time spent on register_video_self_device is: %lld\n", microsecond);
 
 	return 0;
 
